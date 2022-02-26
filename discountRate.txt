@@ -1,0 +1,11 @@
+formula:
+
+
+    Porduct_current_price = Facet_value * ( 1 - discount * time)
+
+
+    P = FV * (1 - DT)
+
+    D =  (1 - p/fv)/T
+
+
