@@ -15,6 +15,7 @@ function CartItems(props: cartItems): any {
     descreaseQuantity,
     removeFromCart,
   } = props;
+
   console.count("cart items rendered");
 
   return productsInCart === undefined || productsInCart.length === 0 ? (
@@ -37,7 +38,7 @@ function CartItems(props: cartItems): any {
                 className="col-1 p-1"
                 onClick={() => removeFromCart(product["Product ID"])}
               >
-                <span>X</span>
+                <span style={{ cursor: "pointer" }}>X</span>
               </div>
             </div>
             <div className="row">

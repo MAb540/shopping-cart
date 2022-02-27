@@ -1,54 +1,54 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import useDiscount from "../../hooks/useDiscount";
+import {
+  getPercentageOfNumber,
+  getPercentFromDiscountCode,
+  getTotalPrice,
+} from "../../Utils/generalUtils";
 import { productForCart } from "../types/ProductTypes";
+import CartInput from "./CartInput";
 
 interface IProps {
   productsInCart: productForCart[];
 }
 
-function getTotalPrice(products: IProps["productsInCart"]) {
-  let totalPrice: number = 0;
-  let eachProdPrice: number = 0;
-
-  if (products.length === 0) {
-    return undefined;
-  }
-  products.forEach((product) => {
-    if (product.Quantity > 1) {
-      eachProdPrice = product.Price;
-      eachProdPrice = eachProdPrice * product.Quantity;
-    } else {
-      eachProdPrice = product.Price;
-    }
-
-    totalPrice += eachProdPrice;
-    eachProdPrice = 0;
-  });
-
-  return totalPrice;
-}
-
 const CartSummary: React.FC<IProps> = (props) => {
   console.count("cart summary rerendered");
 
-  const totalPrice = getTotalPrice(props.productsInCart);
+  const { productsInCart } = props;
+  const { discountCodes } = useDiscount();
 
-  return totalPrice === undefined ? null : (
+  const [totalPrice, setTotalPrice] = useState<number>(0);
+
+  useEffect(() => {
+    const totalPriceCalculated = getTotalPrice(productsInCart);
+    setTotalPrice(totalPriceCalculated);
+  }, [productsInCart]);
+
+  const handleSubmit = (discountCodeInput: string) => {
+    const percentageFromDiscountCode = getPercentFromDiscountCode(
+      discountCodeInput,
+      discountCodes
+    );
+    let totalPrice = getTotalPrice(productsInCart);
+
+    if (percentageFromDiscountCode !== undefined) {
+      totalPrice =
+        totalPrice -
+        getPercentageOfNumber(totalPrice, percentageFromDiscountCode);
+    }
+
+    setTotalPrice(totalPrice);
+  };
+
+  return productsInCart.length === 0 ? null : (
     <div className="card w-100">
       <div className="card-body p-2">
         <h3 className="p-2">Cart Summary</h3>
         <h6 className="card-title text-center">PROMO CODE</h6>
         <div className="p-2">
           <div className="row">
-            <div className="col-9 ">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Enter Coupon Code"
-              />
-            </div>
-            <div className="col-2 ">
-              <button className="btn btn-light">Apply</button>
-            </div>
+            <CartInput handleSubmit={handleSubmit} />
           </div>
 
           <div className="row mt-2">

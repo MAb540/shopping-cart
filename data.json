@@ -396,5 +396,23 @@
       "Inventory Count": 11,
       "Date Created": "2018-03-16 22:17:50"
     }
+  ],
+  "discount-codes": [
+    {
+      "code": "323872",
+      "value": 5
+    },
+    {
+      "code": "282206",
+      "value": "10"
+    },
+    {
+      "code": "982258",
+      "value": "15"
+    },
+    {
+      "code": "000000",
+      "value": "80"
+    }
   ]
 }

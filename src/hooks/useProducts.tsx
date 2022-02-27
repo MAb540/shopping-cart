@@ -1,18 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { product } from "../components/types/ProductTypes";
-
-const getProductsData = async () => {
-  const url = "http://localhost:4000/products";
-  const res = await fetch(url);
-
-  if (!res.ok) {
-    const errorMessage = `An error occured: ${res.status}. \n${res.statusText}`;
-    throw new Error(errorMessage);
-  }
-
-  const data = res.json();
-  return data;
-};
+import { getData } from "../Utils/generalUtils";
 
 interface IState {
   products: product[];
@@ -24,10 +12,11 @@ function useProducts() {
   useEffect(() => {
     (async () => {
       try {
-        const data = await getProductsData();
+        const url = "http://localhost:4000/products";
+        const data = await getData(url);
         setProducts(data);
       } catch (err) {
-        console.log(err);
+        throw err;
       }
     })();
   }, []);
