@@ -13,7 +13,6 @@ function CartInput(props: IProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDiscountCode(e.target.value);
   };
-
   const { handleSubmit } = props;
 
   return (

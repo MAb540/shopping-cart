@@ -1,114 +1,85 @@
-import { useState } from "react";
-import { product, productForCart } from "../components/types/ProductTypes";
+import { useRecoilState } from "recoil";
+import { cartListState } from "../components/recoilStateAtoms/cartAtom";
+import { product } from "../components/types/ProductTypes";
 import { productCartMapper } from "../Utils/cartUtility";
-
-interface IState {
-  productsInCart: productForCart[];
-}
+import { getTotalPrice } from "../Utils/generalUtils";
+import useSideBar from "./useSideBar";
 
 function useCart() {
-  const [productsInCart, setProductsInCart] = useState<
-    IState["productsInCart"]
-  >([]);
+  const [cartList, setCartList] = useRecoilState(cartListState);
+  const { toggleDrawer } = useSideBar();
 
   const increaseQuantity = (id: number): void => {
-    const newProductsInCart = [...productsInCart].map((product) => {
-      if (product["Product ID"] === id) {
-        product.Quantity += 1;
-        return product;
+    const newCartList = cartList.map((p) => {
+      if (p["Product ID"] === id) {
+        return { ...p, Quantity: p.Quantity + 1 };
       }
-      return product;
+      return p;
     });
-    setProductsInCart(newProductsInCart);
+    setCartList(newCartList);
   };
 
   const decreaseQuantity = (id: number): void => {
-    const newProdsInCart = productsInCart.filter(
+    const existingProductInCart = cartList.filter(
       (product) => product["Product ID"] === id
     )[0];
 
-    if (newProdsInCart.Quantity > 1) {
-      newProdsInCart.Quantity -= 1;
-      setProductsInCart((prev) => {
-        const newState = prev.filter((product) => product["Product ID"] !== id);
-        return [...newState, newProdsInCart];
+    if (existingProductInCart.Quantity > 1) {
+      setCartList((oldCartList) => {
+        const newCartList = oldCartList.map((p) => {
+          if (p["Product ID"] === id) {
+            return { ...p, Quantity: p.Quantity - 1 };
+          }
+          return p;
+        });
+        return newCartList;
       });
     } else {
-      setProductsInCart((prev) => {
-        const newState = prev.filter((prod) => prod["Product ID"] !== id);
-        return [...newState];
-      });
+      const newCartList = cartList.filter((prod) => prod["Product ID"] !== id);
+      if (newCartList.length === 0) {
+        toggleDrawer();
+      }
+      setCartList(newCartList);
     }
   };
 
   const removeFromCart = (id: number): void => {
-    setProductsInCart((prev) => {
-      const newState = prev.filter((product) => product["Product ID"] !== id);
-      return [...newState];
+    const newCartList = cartList.filter((prod) => prod["Product ID"] !== id);
+    if (newCartList.length === 0) {
+      toggleDrawer();
+    }
+    setCartList(newCartList);
+  };
+
+  const addToCart = (product: product): void => {
+    const newProdsInCart = productCartMapper(product);
+
+    setCartList((oldCartList) => {
+      let isFound = false;
+      const prodsAlreadyExists = oldCartList.map((p) => {
+        if (p["Product ID"] === newProdsInCart["Product ID"]) {
+          isFound = true;
+          return { ...p, Quantity: p.Quantity + 1 };
+        }
+        return p;
+      });
+
+      if (!isFound) {
+        return [...oldCartList, newProdsInCart];
+      }
+      return prodsAlreadyExists;
     });
   };
 
-  const handleCart = (product: product): void => {
-    const newProdsInCart = productCartMapper(product);
-    let isFound = false;
-    const newProductsInCart = [...productsInCart].map((product) => {
-      if (product["Product ID"] === newProdsInCart["Product ID"]) {
-        isFound = true;
-        product.Quantity += 1;
-        return product;
-      }
-      return product;
-    });
-    setProductsInCart(newProductsInCart);
-    if (!isFound) {
-      setProductsInCart((prev) => [...prev, newProdsInCart]);
-    }
-    // setProductsInCart((prevState) => {
-    //   let productAlreadyExists: productForCart | undefined = prevState.find(
-    //     (product) => product["Product ID"] === newProdsInCart["Product ID"]
-    //   );
-    //   if (productAlreadyExists !== undefined) {
-    //     productAlreadyExists.Quantity += 1;
-    //     return [...prevState];
-    //   } else {
-    //     return [...prevState, newProdsInCart];
-    //   }
-    // });
-    // let productAlreadyExists: productForCart | undefined = productsInCart.find(
-    //   (product) => product["Product ID"] === newProdsInCart["Product ID"]
-    // );
-    // if (productAlreadyExists !== undefined) {
-    //   productAlreadyExists.Quantity += 1;
-    // } else {
-    //   setProductsInCart((prev) => [...prev, newProdsInCart]);
-    // }
-    // const cartProduct = JSON.parse(
-    //   JSON.stringify(products.find((product) => product["Product ID"] === id))
-    // );
-    // let newProdsInCart: any = productsInCart.find(
-    //   (product) => product["Product ID"] === cartProduct["Product ID"]
-    // );
-    // if (newProdsInCart !== undefined) {
-    //   newProdsInCart = JSON.parse(JSON.stringify(newProdsInCart));
-    //   newProdsInCart.Quantity += 1;
-    //   let newProducts = productsInCart.filter(
-    //     (product: { [x: string]: any }) =>
-    //       product["Product ID"] !== newProdsInCart["Product ID"]
-    //   );
-    //   newProducts.push(newProdsInCart);
-    //   setProductsInCart(newProducts);
-    // } else {
-    //   const newProdsInCart = productCartMapper(cartProduct);
-    //   setProductsInCart((prev) => [...prev, newProdsInCart]);
-    // }
-  };
+  const totalCartProductsPriceCalculated = getTotalPrice(cartList);
 
   return {
-    productsInCart,
-    handleCart,
+    cartList,
+    addToCart,
     increaseQuantity,
     decreaseQuantity,
     removeFromCart,
+    totalCartProductsPriceCalculated,
   };
 }
 

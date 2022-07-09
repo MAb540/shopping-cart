@@ -1,47 +1,18 @@
-import React, { useEffect, useState } from "react";
-import useDiscount from "../../hooks/useDiscount";
-import {
-  getPercentageOfNumber,
-  getPercentFromDiscountCode,
-  getTotalPrice,
-} from "../../Utils/generalUtils";
-import { productForCart } from "../types/ProductTypes";
+import { Button } from "@mui/material";
+import { Link } from "react-router-dom";
+import useCartSummary from "../../hooks/useCartSummary";
+import useSideBar from "../../hooks/useSideBar";
+
 import CartInput from "./CartInput";
 
-interface IProps {
-  productsInCart: productForCart[];
-}
+const CartSummary: React.FC = () => {
+  const { totalPrice, handleSubmit } = useCartSummary();
+  const { toggleDrawer } = useSideBar();
+  if (totalPrice === 0) {
+    return null;
+  }
 
-const CartSummary: React.FC<IProps> = (props) => {
-  console.count("cart summary rerendered");
-
-  const { productsInCart } = props;
-  const { discountCodes } = useDiscount();
-
-  const [totalPrice, setTotalPrice] = useState<number>(0);
-
-  useEffect(() => {
-    const totalPriceCalculated = getTotalPrice(productsInCart);
-    setTotalPrice(totalPriceCalculated);
-  }, [productsInCart]);
-
-  const handleSubmit = (discountCodeInput: string) => {
-    const percentageFromDiscountCode = getPercentFromDiscountCode(
-      discountCodeInput,
-      discountCodes
-    );
-    let totalPrice = getTotalPrice(productsInCart);
-
-    if (percentageFromDiscountCode !== undefined) {
-      totalPrice =
-        totalPrice -
-        getPercentageOfNumber(totalPrice, percentageFromDiscountCode);
-    }
-
-    setTotalPrice(totalPrice);
-  };
-
-  return productsInCart.length === 0 ? null : (
+  return (
     <div className="card w-100">
       <div className="card-body p-2">
         <h3 className="p-2">Cart Summary</h3>
@@ -71,7 +42,12 @@ const CartSummary: React.FC<IProps> = (props) => {
         </div>
 
         <div className="row justify-content-center px-4">
-          <button className="btn btn-light">Proceed to Checkout</button>
+          <Button variant="text" onClick={() => toggleDrawer()}>
+            <Link to="checkout" style={{ textDecoration: "none" }}>
+              {" "}
+              Proceed to Checkout{" "}
+            </Link>
+          </Button>
         </div>
       </div>
     </div>

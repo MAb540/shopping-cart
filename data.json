@@ -13,7 +13,6 @@
       "Rating Count": 8,
       "Inventory Count": 21
     },
-
     {
       "Product ID": 6489,
       "SKU": "DKO-PROF",
@@ -160,7 +159,6 @@
       "Date Created": "2018-03-01 19:59:05"
     }
   ],
-
   "extra_products": [
     {
       "Product ID": 8099,
@@ -307,7 +305,6 @@
       "Inventory Count": 30,
       "Date Created": "2018-03-03 17:38:50"
     },
-
     {
       "Product ID": 10448,
       "SKU": "SKE-15460",
@@ -337,7 +334,6 @@
       "Inventory Count": 0,
       "Date Created": "2018-06-25 18:09:07"
     },
-
     {
       "Product ID": 5670,
       "SKU": "HEH-2223",
@@ -413,6 +409,58 @@
     {
       "code": "000000",
       "value": "80"
+    }
+  ],
+  "users": [
+    {
+      "firstName": "mab",
+      "lastName": "jumbo",
+      "email": "mab54052@gmail.com",
+      "password": "@bleomessI1",
+      "confirmPassword": "@bleomessI1",
+      "id": 1
+    },
+    {
+      "firstName": "mab",
+      "lastName": "jaa",
+      "email": "mab54052@gmail.com",
+      "password": "@bleomessI1",
+      "confirmPassword": "@bleomessI1",
+      "id": 2
+    },
+    {
+      "firstName": "mab",
+      "lastName": "name",
+      "email": "some@gmail.com",
+      "password": "@bleomessI1",
+      "confirmPassword": "@bleomessI1",
+      "id": 3
+    },
+    {
+      "firstName": "mab",
+      "lastName": "name",
+      "email": "some@gmail.com",
+      "password": "@bleomessI1",
+      "confirmPassword": "@bleomessI1",
+      "id": 4
+    },
+    {
+      "firstName": "mab",
+      "lastName": "name",
+      "userName": "mab134",
+      "email": "some@gmail.com",
+      "password": "@bleomessI1",
+      "confirmPassword": "@bleomessI1",
+      "id": 5
+    },
+    {
+      "firstName": "jumbo",
+      "lastName": "mab",
+      "userName": "som",
+      "email": "some@gmail.com",
+      "password": "@bleomessI1",
+      "confirmPassword": "@bleomessI1",
+      "id": 6
     }
   ]
 }
